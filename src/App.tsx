@@ -12,12 +12,22 @@ import {
   CheckCircle, 
   Star,
   Menu,
-  X
+  X,
+  Search
 } from 'lucide-react'
+import {
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandGroup,
+  CommandItem,
+  CommandEmpty
+} from './components/ui/command'
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [cartCount, setCartCount] = useState(0)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
 
   const products = [
     {
@@ -50,6 +60,54 @@ function App() {
       price: 10,
       image: "/api/placeholder/400/300",
       description: "Silicone wristband supporting malaria prevention",
+      category: "merch"
+    },
+    {
+      id: 5,
+      name: "Malariaway Hoodie",
+      price: 45,
+      image: "/api/placeholder/400/300",
+      description: "Comfortable hoodie spreading malaria awareness",
+      category: "merch"
+    },
+    {
+      id: 6,
+      name: "Protection Cap",
+      price: 25,
+      image: "/api/placeholder/400/300",
+      description: "UV protection cap with mosquito-repelling fabric",
+      category: "merch"
+    },
+    {
+      id: 7,
+      name: "Mosquito Guardian Plushie",
+      price: 18,
+      image: "/api/placeholder/400/300",
+      description: "Soft plushie teaching kids about malaria prevention",
+      category: "merch"
+    },
+    {
+      id: 8,
+      name: "Awareness Necklace",
+      price: 15,
+      image: "/api/placeholder/400/300",
+      description: "Elegant necklace with malaria awareness charm",
+      category: "merch"
+    },
+    {
+      id: 9,
+      name: "Protective Sleep PJs",
+      price: 35,
+      image: "/api/placeholder/400/300",
+      description: "Soft pajamas with natural mosquito-repelling fibers",
+      category: "merch"
+    },
+    {
+      id: 10,
+      name: "Mosquito Dream Catcher",
+      price: 28,
+      image: "/api/placeholder/400/300",
+      description: "Handcrafted dream catcher with mosquito net design",
       category: "merch"
     }
   ]
@@ -99,6 +157,9 @@ function App() {
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => setIsSearchOpen(true)}>
+                <Search className="h-4 w-4" />
               </Button>
             </div>
           </div>
@@ -186,7 +247,7 @@ function App() {
 
           <TabsContent value="all" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product) => (
-              <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+              <Card id={`product-${product.id}`} key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="aspect-square bg-gray-100 flex items-center justify-center">
                   <Shield className="h-16 w-16 text-gray-400" />
                 </div>
@@ -208,7 +269,7 @@ function App() {
 
           <TabsContent value="nets" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.filter(p => p.category === 'nets').map((product) => (
-              <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+              <Card id={`product-${product.id}`} key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="aspect-square bg-gray-100 flex items-center justify-center">
                   <Shield className="h-16 w-16 text-gray-400" />
                 </div>
@@ -230,7 +291,7 @@ function App() {
 
           <TabsContent value="spray" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.filter(p => p.category === 'spray').map((product) => (
-              <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+              <Card id={`product-${product.id}`} key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="aspect-square bg-gray-100 flex items-center justify-center">
                   <Shield className="h-16 w-16 text-gray-400" />
                 </div>
@@ -252,7 +313,7 @@ function App() {
 
           <TabsContent value="merch" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.filter(p => p.category === 'merch').map((product) => (
-              <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
+              <Card id={`product-${product.id}`} key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="aspect-square bg-gray-100 flex items-center justify-center">
                   <Shield className="h-16 w-16 text-gray-400" />
                 </div>
@@ -366,6 +427,27 @@ function App() {
           </Card>
         </div>
       </section>
+
+      {/* Search Dialog */}
+      <CommandDialog open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+        <CommandInput placeholder="Search products..." />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Products">
+            {products.map((product) => (
+              <CommandItem key={product.id} onSelect={() => {
+                setIsSearchOpen(false);
+                const element = document.getElementById(`product-${product.id}`);
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}>
+                {product.name}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
